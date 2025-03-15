@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DurgaPrasad_WeatherForcast</title>
+    <link rel="stylesheet" href="forcast.css">
+</head>
+<body>
+    <div class="container">
+        <div class="search">
+            <input type="text" class="search-bar" placeholder="Search for a city">
+            <button><img src="https://cdn-icons-png.flaticon.com/512/751/751463.png" alt="Search"></button>
+        </div>
+        <div class="weather-img"> 
+            <img id="cloud" src="https://cdn-icons-png.flaticon.com/512/1146/1146869.png">
+            <h2 class="temp">32<sup>o</sup>c</h2>
+            <h4 class="city">Odisha</h4>
+        </div>
+        <br>
+        <div class="info">
+            <div class="col">
+                <img id="humid" src="https://cdn-icons-png.flaticon.com/512/1582/1582886.png" alt="Humidity">
+                <h4 class="humidity">64%</h4>
+                <h6>Humidity</h6>
+            </div>
+            <div class="col">
+                <img id="wind" src="https://cdn-icons-png.flaticon.com/128/5532/5532947.png" alt="Wind">
+                <h4 class="windspeed">18 km/h</h4>
+                <h6>Wind Speed</h6>
+            </div>
+        </div>
+    </div>
+    <script>
+        const apiKey = '560276c384b5e88628162d6be336b857';
+        const url = 'https://api.openweathermap.org/data/2.5/weather?q=';
+        const search = document.querySelector('.search-bar');
+        const button = document.querySelector('button');
+
+        async function checkWeather(city) {
+            const response = await fetch(url + city + '&units=metric&appid=' + apiKey);
+            const data = await response.json();
+            console.log(data);
+
+            document.querySelector('.city').innerHTML = data.name;
+            document.querySelector('.temp').innerHTML = Math.round(data.main.temp) + '°c';
+            document.querySelector('.humidity').innerText = data.main.humidity + '%';
+            document.querySelector('.windspeed').innerText = data.wind.speed + ' km/h';
+
+            const weatherCondition = data.weather[0].main.toLowerCase();
+            const cloudImage = document.getElementById('cloud');
+            if (weatherCondition === 'clouds') {
+                cloudImage.src = 'https://cdn-icons-png.flaticon.com/512/1146/1146869.png';
+            } else if (weatherCondition === 'rain') {
+                cloudImage.src = 'https://cdn-icons-png.flaticon.com/512/1163/1163624.png';
+            } else if (weatherCondition === 'clear') {
+                cloudImage.src = 'https://cdn-icons-png.flaticon.com/512/869/869869.png';
+            } else if (weatherCondition === 'snow') {
+                cloudImage.src = 'https://cdn-icons-png.flaticon.com/512/2315/2315309.png';
+            } else {
+                cloudImage.src = 'https://cdn-icons-png.flaticon.com/512/1146/1146869.png';
+            }
+        }
+        button.addEventListener('click', function() {
+            checkWeather(search.value);
+        });
+        search.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter') {
+                checkWeather(search.value);
+            }
+        });
+    </script>
+</body>
+</html>
